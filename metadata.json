@@ -1,0 +1,6 @@
+{
+  "name": "GApp - Multi-Client AI Agent Platform",
+  "description": "A SaaS platform for managing and deploying conversational AI agents, each with a unique master prompt. Features an admin dashboard for agent configuration and client-facing chat interfaces.",
+  "requestFramePermissions": [],
+  "prompt": ""
+}
