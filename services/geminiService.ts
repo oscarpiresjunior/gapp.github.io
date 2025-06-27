@@ -75,7 +75,9 @@ const getChatInstance = (
     model: GEMINI_TEXT_MODEL,
     history: geminiHistory,
     config: {
-      systemInstruction: masterPrompt,
+      systemInstruction: {
+        parts: [{ text: masterPrompt }]
+      },
     },
   });
   chatInstances[agentIdentifier] = chat;
