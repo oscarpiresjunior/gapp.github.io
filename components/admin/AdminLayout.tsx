@@ -35,12 +35,12 @@ const AdminLayout: React.FC = () => {
     <div className="flex h-screen bg-gray-100">
       {/* Sidebar */}
       <aside className="w-64 bg-brazil-blue text-white p-6 flex flex-col">
-        <h1 className="text-3xl font-bold text-brazil-yellow mb-8">GApp Admin</h1>
+        <h1 className="text-3xl font-bold text-brazil-yellow mb-8">GAPPCHAT Admin</h1>
         <nav className="flex-grow">
           <ul className="space-y-2">
             <li>
               <NavLink to="/admin/dashboard">
-                Meus GApps
+                Meus Agentes
               </NavLink>
             </li>
             <li>

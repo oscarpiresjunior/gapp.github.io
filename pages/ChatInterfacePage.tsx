@@ -23,7 +23,7 @@ const ChatInterfacePage: React.FC = () => {
 
 
   const setupConversation = useCallback(async (agentData: ClientAgent) => {
-    const sessionConvId = sessionStorage.getItem(`gapp_conv_id_${agentData.id}`);
+    const sessionConvId = sessionStorage.getItem(`gappchat_conv_id_${agentData.id}`);
     if (sessionConvId) {
       const conv = await conversationService.getConversationById(sessionConvId);
       if (conv) {
@@ -37,7 +37,7 @@ const ChatInterfacePage: React.FC = () => {
     const newConv = await conversationService.createConversation(agentData.id, agentData.ownerEmail || 'unknown');
     setConversationId(newConv.id);
     setMessages(newConv.messages.map(m => ({...m, timestamp: new Date(m.timestamp)})));
-    sessionStorage.setItem(`gapp_conv_id_${agentData.id}`, newConv.id);
+    sessionStorage.setItem(`gappchat_conv_id_${agentData.id}`, newConv.id);
 
   }, []);
 

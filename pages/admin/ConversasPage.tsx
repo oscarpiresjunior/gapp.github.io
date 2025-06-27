@@ -73,7 +73,7 @@ const ConversasPage: React.FC = () => {
     <div className="h-[calc(100vh-80px)] flex flex-col">
       <div className="flex-shrink-0 mb-6">
         <h2 className="text-3xl font-bold text-gray-800">Caixa de Entrada</h2>
-        <p className="text-gray-600 mt-1">Visualize e gerencie as conversas dos seus GApps.</p>
+        <p className="text-gray-600 mt-1">Visualize e gerencie as conversas dos seus agentes.</p>
       </div>
 
       {error && <p className="text-red-500 bg-red-100 p-3 rounded-md mb-4">{error}</p>}

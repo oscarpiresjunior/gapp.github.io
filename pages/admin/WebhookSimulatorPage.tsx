@@ -114,7 +114,7 @@ const WebhookSimulatorPage: React.FC = () => {
       <div className="mb-8">
         <h2 className="text-3xl font-bold text-gray-800">Simulador de Webhook do Stripe</h2>
         <p className="text-gray-600 mt-2">
-          Esta página simula o recebimento de eventos do Stripe para ativar ou desativar todos os GApps de um cliente.
+          Esta página simula o recebimento de eventos do Stripe para ativar ou desativar todos os agentes de um cliente.
         </p>
       </div>
       
@@ -127,7 +127,7 @@ const WebhookSimulatorPage: React.FC = () => {
                 <div>
                     <h3 className="text-xl font-semibold text-brazil-blue">{client.ownerEmail}</h3>
                     <p className="text-sm text-gray-500">
-                        {client.agents.length} GApp(s) associado(s).
+                        {client.agents.length} agente(s) associado(s).
                     </p>
                 </div>
                 <div className="flex space-x-3 mt-4 md:mt-0">

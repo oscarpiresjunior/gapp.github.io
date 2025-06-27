@@ -9,7 +9,7 @@ const LandingPage: React.FC = () => {
       <nav className="bg-white shadow-sm sticky top-0 z-50">
         <div className="container mx-auto px-6 py-4 flex justify-between items-center">
           <Link to="/" className="text-3xl font-bold text-brazil-blue">
-            GApp
+            GAPPCHAT
           </Link>
           <div>
             <Link
@@ -29,7 +29,7 @@ const LandingPage: React.FC = () => {
             Crie Agentes de IA Personalizados para seu Negócio!
           </h1>
           <p className="text-lg lg:text-2xl mb-10 text-brazil-yellow font-medium">
-            Com GApp, configure assistentes virtuais inteligentes com seus próprios prompts,
+            Com GAPPCHAT, configure assistentes virtuais inteligentes com seus próprios prompts,
             API Gemini e arquivos de referência.
           </p>
           <Link
@@ -45,7 +45,7 @@ const LandingPage: React.FC = () => {
       <section className="py-16 lg:py-24 bg-white">
         <div className="container mx-auto px-6">
           <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-800 mb-16">
-            Por que escolher GApp?
+            Por que escolher GAPPCHAT?
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
             {[
@@ -75,14 +75,14 @@ const LandingPage: React.FC = () => {
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-brazil-green mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
                 ),
                 title: 'Painel de Gestão Intuitivo',
-                description: 'Crie, configure e gerencie todos os seus GApps de forma fácil e centralizada.',
+                description: 'Crie, configure e gerencie todos os seus agentes de forma fácil e centralizada.',
               },
               {
                 icon: (
                    <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-brazil-green mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
                 ),
                 title: 'Respostas em Tempo Real',
-                description: 'Interaja com seus GApps através de um chat responsivo com respostas em streaming.',
+                description: 'Interaja com seus agentes através de um chat responsivo com respostas em streaming.',
               },
                {
                 icon: (
@@ -107,13 +107,13 @@ const LandingPage: React.FC = () => {
         <div className="container mx-auto px-6 text-center">
           <h2 className="text-3xl font-bold text-gray-800 mb-6">Pronto para começar?</h2>
           <p className="text-lg text-gray-600 mb-8">
-            Crie seu primeiro agente GApp em minutos.
+            Crie seu primeiro agente GAPPCHAT em minutos.
           </p>
           <Link
             to="/signup"
             className="bg-brazil-green text-white text-lg font-semibold py-3 px-8 rounded-lg shadow-md hover:bg-green-700 transition duration-300 mr-4"
           >
-            Assine o GApp Pro - R$ 50/mês
+            Assine o GAPPCHAT Pro - R$ 50/mês
           </Link>
           <Link
             to="/login"
@@ -128,7 +128,7 @@ const LandingPage: React.FC = () => {
       {/* Footer */}
       <footer className="bg-brazil-blue text-white py-10">
         <div className="container mx-auto px-6 text-center">
-          <p>&copy; {new Date().getFullYear()} GApp. Todos os direitos reservados.</p>
+          <p>&copy; {new Date().getFullYear()} GAPPCHAT. Todos os direitos reservados.</p>
           <p className="text-sm text-gray-300 mt-1">Uma plataforma inovadora para seus agentes de IA.</p>
         </div>
       </footer>

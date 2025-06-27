@@ -134,7 +134,7 @@ const ClientForm: React.FC<ClientFormProps> = ({ onSubmit, initialData, isSaving
     <form onSubmit={handleSubmit} className="space-y-8 bg-white p-8 rounded-lg shadow-md">
       {/* General Info Section */}
       <fieldset className="space-y-6">
-        <legend className="text-xl font-semibold text-gray-700 mb-4">Informações do GApp</legend>
+        <legend className="text-xl font-semibold text-gray-700 mb-4">Informações do Agente</legend>
         <div>
           <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
             Nome do Cliente
@@ -217,7 +217,7 @@ const ClientForm: React.FC<ClientFormProps> = ({ onSubmit, initialData, isSaving
             value={formData.geminiApiKey}
             onChange={handleChange}
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brazil-blue focus:border-brazil-blue sm:text-sm"
-            placeholder="Cole a API Key do Gemini específica para este GApp"
+            placeholder="Cole a API Key do Gemini específica para este Agente"
           />
           <p className="mt-1 text-xs text-gray-500">Se deixado em branco, a API Key padrão da plataforma será utilizada.</p>
         </div>
@@ -300,7 +300,7 @@ const ClientForm: React.FC<ClientFormProps> = ({ onSubmit, initialData, isSaving
           disabled={isSaving || !!errors.attachments} // Disable if there's an attachment processing error
           className="bg-brazil-green hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50"
         >
-          {isSaving ? 'Salvando...' : (initialData ? 'Salvar Alterações' : 'Criar GApp')}
+          {isSaving ? 'Salvando...' : (initialData ? 'Salvar Alterações' : 'Criar Agente')}
         </button>
       </div>
     </form>

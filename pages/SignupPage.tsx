@@ -57,13 +57,13 @@ const SignupPage: React.FC = () => {
       <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-xl shadow-2xl">
         <div>
           <Link to="/" className="flex justify-center mb-6">
-             <h1 className="text-5xl font-bold text-brazil-blue">GApp</h1>
+             <h1 className="text-5xl font-bold text-brazil-blue">GAPPCHAT</h1>
           </Link>
           <h2 className="text-center text-3xl font-extrabold text-gray-900">
-            Crie sua Conta GApp
+            Crie sua Conta GAPPCHAT
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Plano GApp Pro: <span className="font-medium text-brazil-green">R$ 50,00/mês</span>
+            Plano GAPPCHAT Pro: <span className="font-medium text-brazil-green">R$ 50,00/mês</span>
           </p>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>

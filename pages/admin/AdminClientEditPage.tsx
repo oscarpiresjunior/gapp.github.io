@@ -104,7 +104,7 @@ const AdminClientEditPage: React.FC = () => {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-gray-800 mb-6">Editar GApp: {agent.name}</h2>
+      <h2 className="text-2xl font-bold text-gray-800 mb-6">Editar Agente: {agent.name}</h2>
       {error && <p className="mb-4 text-red-500 bg-red-100 p-3 rounded-md">{error}</p>}
       <ClientForm initialData={agent} onSubmit={handleSubmit} isSaving={isSaving} />
 

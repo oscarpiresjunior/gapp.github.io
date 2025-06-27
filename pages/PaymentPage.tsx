@@ -57,14 +57,14 @@ const PaymentPage: React.FC = () => {
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8 text-center">
       <div className="max-w-md w-full bg-white p-10 rounded-xl shadow-2xl">
         <Link to="/" className="flex justify-center mb-6">
-            <h1 className="text-5xl font-bold text-brazil-blue">GApp</h1>
+            <h1 className="text-5xl font-bold text-brazil-blue">GAPPCHAT</h1>
         </Link>
 
         {paymentStatus === 'processing' && (
           <>
             <h2 className="text-2xl font-semibold text-gray-800 mb-4">Processando Assinatura...</h2>
             <p className="text-gray-600 mb-8">
-              Estamos ativando sua assinatura do Plano GApp Pro (R$ 50,00/mês).
+              Estamos ativando sua assinatura do Plano GAPPCHAT Pro (R$ 50,00/mês).
               Por favor, aguarde. Isso é uma simulação.
             </p>
             <LoadingSpinner size="w-12 h-12" />
@@ -80,14 +80,14 @@ const PaymentPage: React.FC = () => {
             <h2 className="text-2xl font-bold text-brazil-green mb-3">Assinatura Ativada!</h2>
             {user?.name && <p className="text-xl text-gray-700 mb-2">Parabéns, {user.name}!</p>}
             <p className="text-gray-600 mb-8">
-              Sua conta está ativa e seu GApp foi salvo com sucesso.
+              Sua conta está ativa e seu agente foi salvo com sucesso.
               Agora você pode acessar o painel de gestão para ver seu agente em ação.
             </p>
             <button
               onClick={handleProceedToDashboard}
               className="w-full bg-brazil-blue text-white font-semibold py-3 px-6 rounded-lg shadow hover:bg-blue-700 transition duration-200 text-lg"
             >
-              Ir para Meus GApps
+              Ir para Meus Agentes
             </button>
           </>
         )}

@@ -85,7 +85,7 @@ const AdminDashboardPage: React.FC = () => {
   return (
     <div>
       <div className="flex justify-between items-center mb-8">
-        <h2 className="text-3xl font-bold text-gray-800">Meus GApps</h2>
+        <h2 className="text-3xl font-bold text-gray-800">Meus Agentes</h2>
         <Link
           to="/admin/clients/new"
           className="bg-brazil-green text-white font-semibold py-3 px-6 rounded-lg shadow hover:bg-green-700 transition duration-200 flex items-center"
@@ -93,20 +93,20 @@ const AdminDashboardPage: React.FC = () => {
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
             <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
           </svg>
-          Adicionar Novo GApp
+          Adicionar Novo Agente
         </Link>
       </div>
 
       {agents.length === 0 && !isLoading ? (
         <div className="text-center py-10 px-6 bg-white rounded-lg shadow-md">
             <h3 className="text-xl font-semibold text-gray-700">Bem-vindo(a), {user?.name}!</h3>
-            <p className="text-gray-600 mt-2">Você ainda não tem nenhum agente GApp.</p>
+            <p className="text-gray-600 mt-2">Você ainda não tem nenhum agente.</p>
             <p className="text-gray-600 mt-1">Crie seu primeiro agente para começar a interagir!</p>
              <Link
               to="/admin/clients/new"
               className="mt-6 inline-block bg-brazil-green text-white font-semibold py-2 px-5 rounded-lg shadow hover:bg-green-700 transition duration-200"
             >
-              Criar meu primeiro GApp
+              Criar meu primeiro Agente
             </Link>
         </div>
       ) : (

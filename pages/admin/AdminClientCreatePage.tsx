@@ -54,7 +54,7 @@ const AdminClientCreatePage: React.FC = () => {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-gray-800 mb-6">Adicionar Novo GApp</h2>
+      <h2 className="text-2xl font-bold text-gray-800 mb-6">Adicionar Novo Agente</h2>
       {error && <p className="mb-4 text-red-500 bg-red-100 p-3 rounded-md">{error}</p>}
       <ClientForm onSubmit={handleSubmit} isSaving={isSaving} />
 

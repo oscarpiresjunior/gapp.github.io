@@ -12,7 +12,7 @@ export const GEMINI_TEXT_MODEL = "gemini-2.5-flash-preview-04-17";
 // Exposing API keys on the client-side is a security risk. A backend proxy is recommended.
 // The API key is now directly accessed in geminiService.ts via process.env.API_KEY as a fallback.
 
-export const MOCK_CLIENT_AGENTS_KEY = 'gapp_mock_client_agents';
-export const MOCK_USERS_KEY = 'gapp_mock_users';
-export const SESSION_USER_KEY = 'gapp_session_user_email';
-export const MOCK_CONVERSATIONS_KEY = 'gapp_conversations'; // New key for CRM
+export const MOCK_CLIENT_AGENTS_KEY = 'gappchat_mock_client_agents';
+export const MOCK_USERS_KEY = 'gappchat_mock_users';
+export const SESSION_USER_KEY = 'gappchat_session_user_email';
+export const MOCK_CONVERSATIONS_KEY = 'gappchat_conversations'; // New key for CRM
