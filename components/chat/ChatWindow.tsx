@@ -1,3 +1,4 @@
+
 import React, { useRef, useEffect } from 'react';
 import { ChatMessage, GroundingChunk, GroundingChunkWeb } from '../../types';
 import MessageBubble from './MessageBubble';
@@ -74,7 +75,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
 
 
   return (
-    <div className="flex flex-col h-full bg-gray-50 shadow-lg rounded-lg overflow-hidden">
+    <div className="flex flex-col h-full bg-gray-50">
       <header className="bg-brazil-blue text-white p-4 text-center sticky top-0 z-10">
         <h1 className="text-xl font-semibold">{agentName || 'Chat Agent'}</h1>
         {/* isLoadingAgent here refers to the initial loading of agent config, not message sending state */}

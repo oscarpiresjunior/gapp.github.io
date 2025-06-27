@@ -10,6 +10,8 @@ const SignupPage: React.FC = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { signup, login, isLoading } = useAuth();
   const navigate = useNavigate();
 
@@ -98,12 +100,12 @@ const SignupPage: React.FC = () => {
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
-            <div>
+            <div className="relative">
               <label htmlFor="password" className="sr-only">Senha</label>
               <input
                 id="password"
                 name="password"
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 autoComplete="new-password"
                 required
                 className="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-brazil-blue focus:border-brazil-blue focus:z-10 sm:text-sm"
@@ -111,13 +113,25 @@ const SignupPage: React.FC = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
+               <button
+                  type="button"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
+                  onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
+                >
+                  {showPassword ? (
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M3.707 2.293a1 1 0 00-1.414 1.414l14 14a1 1 0 001.414-1.414l-1.473-1.473A10.014 10.014 0 0019.542 10C18.268 5.943 14.478 3 10 3a9.958 9.958 0 00-4.512 1.074L3.707 2.293zM5.525 7.646a2.5 2.5 0 00-3.323 3.323l-1.29-1.29A10.012 10.012 0 0110 5c1.55 0 3.04.5 4.38 1.408l-2.074 2.074a2.5 2.5 0 00-3.323 3.323l-1.29-1.29zM10 12a2 2 0 110-4 2 2 0 010 4z" clipRule="evenodd" /></svg>
+                  ) : (
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500" viewBox="0 0 20 20" fill="currentColor"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z" /><path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" /></svg>
+                  )}
+                </button>
             </div>
-            <div>
+            <div className="relative">
               <label htmlFor="confirm-password" className="sr-only">Confirmar Senha</label>
               <input
                 id="confirm-password"
                 name="confirm-password"
-                type="password"
+                type={showConfirmPassword ? 'text' : 'password'}
                 autoComplete="new-password"
                 required
                 className="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-brazil-blue focus:border-brazil-blue focus:z-10 sm:text-sm"
@@ -125,6 +139,18 @@ const SignupPage: React.FC = () => {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
+               <button
+                  type="button"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  aria-label={showConfirmPassword ? 'Ocultar senha' : 'Mostrar senha'}
+                >
+                  {showConfirmPassword ? (
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M3.707 2.293a1 1 0 00-1.414 1.414l14 14a1 1 0 001.414-1.414l-1.473-1.473A10.014 10.014 0 0019.542 10C18.268 5.943 14.478 3 10 3a9.958 9.958 0 00-4.512 1.074L3.707 2.293zM5.525 7.646a2.5 2.5 0 00-3.323 3.323l-1.29-1.29A10.012 10.012 0 0110 5c1.55 0 3.04.5 4.38 1.408l-2.074 2.074a2.5 2.5 0 00-3.323 3.323l-1.29-1.29zM10 12a2 2 0 110-4 2 2 0 010 4z" clipRule="evenodd" /></svg>
+                  ) : (
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500" viewBox="0 0 20 20" fill="currentColor"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z" /><path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" /></svg>
+                  )}
+                </button>
             </div>
           </div>
 

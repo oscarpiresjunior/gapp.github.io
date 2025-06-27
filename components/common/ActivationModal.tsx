@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 interface ActivationModalProps {
@@ -17,9 +18,9 @@ const ActivationModal: React.FC<ActivationModalProps> = ({ isOpen, onClose, onCo
       role="dialog"
     >
       <div className="bg-white p-8 rounded-xl shadow-2xl max-w-lg w-full text-center transform transition-all scale-100 opacity-100">
-        <h2 className="text-3xl font-bold text-brazil-blue mb-4">Sua 'sócIA' está pronta para nascer! 🚀</h2>
+        <h2 className="text-3xl font-bold text-brazil-blue mb-4">Ative seu Agente para Começar</h2>
         <p className="text-gray-700 text-lg mb-8">
-          Para ativar seu agente e obter o link compartilhável, finalize sua assinatura de <span className="font-bold text-brazil-green">R$ 50/mês</span>.
+          Seu agente está configurado e pronto para trabalhar. Ative sua assinatura do <span className="font-bold">GAPPCHAT Pro</span> (<span className="font-bold text-brazil-green">R$ 50/mês</span>) para colocá-lo online e começar a interagir com seus clientes.
         </p>
         <div className="flex justify-center space-x-4">
           <button

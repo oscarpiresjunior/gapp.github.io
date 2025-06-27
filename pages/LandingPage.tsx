@@ -109,18 +109,22 @@ const LandingPage: React.FC = () => {
           <p className="text-lg text-gray-600 mb-8">
             Crie seu primeiro agente GAPPCHAT em minutos.
           </p>
-          <Link
-            to="/signup"
-            className="bg-brazil-green text-white text-lg font-semibold py-3 px-8 rounded-lg shadow-md hover:bg-green-700 transition duration-300 mr-4"
-          >
-            Assine o GAPPCHAT Pro - R$ 50/mês
-          </Link>
-          <Link
-            to="/login"
-            className="text-brazil-blue hover:text-blue-700 font-semibold transition duration-300"
-          >
-            Já é cliente? Acesse seu painel.
-          </Link>
+          <div className="flex flex-col items-center space-y-6">
+            <Link
+              to="/signup"
+              className="bg-brazil-green text-white text-lg font-bold py-3 px-8 rounded-lg shadow-md hover:bg-green-700 transition duration-300 flex flex-col items-center w-full max-w-xs"
+            >
+              <span>Assine o GAPPCHAT</span>
+              <span className="text-base font-normal mt-1">Apenas R$ 50/mês</span>
+            </Link>
+            <Link
+              to="/login"
+              className="text-brazil-blue hover:text-blue-700 font-semibold transition duration-300 flex flex-col items-center"
+            >
+              <span>Já é cliente?</span>
+              <span className="text-sm font-normal">Acesse seu painel.</span>
+            </Link>
+          </div>
         </div>
       </section>
 
