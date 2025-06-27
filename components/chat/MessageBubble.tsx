@@ -3,6 +3,7 @@ import { ChatMessage } from '../../types';
 
 interface MessageBubbleProps {
   message: ChatMessage;
+  viewContext?: 'public' | 'crm'; // To differentiate display logic
 }
 
 const linkifyText = (text: string, isUser: boolean): React.ReactNode[] => {
@@ -50,10 +51,13 @@ const linkifyText = (text: string, isUser: boolean): React.ReactNode[] => {
 }
 
 
-const MessageBubble: React.FC<MessageBubbleProps> = ({ message }) => {
+const MessageBubble: React.FC<MessageBubbleProps> = ({ message, viewContext = 'public' }) => {
   const isUser = message.sender === 'user';
-  // const isAgent = message.sender === 'agent'; // No longer needed for specific styling here
+  const isAgent = message.sender === 'agent';
   const isSystem = message.sender === 'system';
+  
+  // In CRM view, human-sent messages are aligned to the right like user messages
+  const isHumanAgentInCrm = viewContext === 'crm' && isAgent && message.sentBy === 'human';
 
   if (isSystem) {
     return (
@@ -65,14 +69,21 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ message }) => {
 
   const attachment = message.attachment;
 
+  const bubbleAlignment = isUser || isHumanAgentInCrm ? 'justify-end' : 'justify-start';
+  
+  let bubbleStyles = '';
+  if (isUser) {
+    bubbleStyles = 'bg-brazil-green text-white rounded-br-none';
+  } else if (isHumanAgentInCrm) {
+    bubbleStyles = 'bg-blue-500 text-white rounded-br-none'; // Different color for human agent
+  } else { // AI agent
+    bubbleStyles = 'bg-white text-gray-800 rounded-bl-none border border-gray-200';
+  }
+
   return (
-    <div className={`flex my-2 ${isUser ? 'justify-end' : 'justify-start'}`}>
+    <div className={`flex my-2 ${bubbleAlignment}`}>
       <div
-        className={`max-w-xs md:max-w-md lg:max-w-lg px-4 py-3 rounded-xl shadow break-words ${
-          isUser
-            ? 'bg-brazil-green text-white rounded-br-none'
-            : 'bg-white text-gray-800 rounded-bl-none border border-gray-200'
-        }`}
+        className={`max-w-xs md:max-w-md lg:max-w-lg px-4 py-3 rounded-xl shadow break-words ${bubbleStyles}`}
       >
         {attachment && (
           <div className="mb-2">
@@ -95,11 +106,10 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ message }) => {
             )}
           </div>
         )}
-        {message.text && <p className="whitespace-pre-wrap">{linkifyText(message.text, isUser)}</p>}
-        {/* Optional: Display timestamp */}
-        {/* <p className={`text-xs mt-1 ${isUser ? 'text-green-200' : 'text-gray-400'}`}>
-          {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-        </p> */}
+        {message.text && <p className="whitespace-pre-wrap">{linkifyText(message.text, isUser || isHumanAgentInCrm)}</p>}
+        {isHumanAgentInCrm && (
+            <p className="text-xs text-blue-200 mt-1 text-right">Enviado por Você</p>
+        )}
       </div>
     </div>
   );

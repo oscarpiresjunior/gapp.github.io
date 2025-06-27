@@ -1,4 +1,5 @@
-import { ClientAgent, ClientAgentFormData, ClientAgentAttachment } from '../types';
+
+import { ClientAgent, ClientAgentFormData, ClientAgentAttachment, User } from '../types';
 import { MOCK_CLIENT_AGENTS_KEY } from '../constants';
 
 // Initialize with some mock data if localStorage is empty
@@ -17,6 +18,7 @@ If you want to show a file, include [SHOW_FILE:filename.ext] in your response. F
       status: 'active',
       created_at: new Date().toISOString(),
       geminiApiKey: '', // Example: 'SPECIFIC_API_KEY_FOR_STARTUP_SOCIAL'
+      ownerEmail: 'gestor', // Assign to the default admin user
       attachments: [
         // Example attachment (you'd need actual base64 data for a real logo)
         // { 
@@ -42,6 +44,7 @@ To show a file, include [SHOW_FILE:filename.ext] in your response. For example: 
       status: 'active',
       created_at: new Date().toISOString(),
       geminiApiKey: '',
+      ownerEmail: 'gestor', // Assign to the default admin user
       attachments: [],
     },
   ];
@@ -78,9 +81,19 @@ const persistAgents = () => {
   }
 };
 
-export const getClientAgents = async (): Promise<ClientAgent[]> => {
+export const getClientAgents = async (user: User | null): Promise<ClientAgent[]> => {
   await new Promise(resolve => setTimeout(resolve, 300));
-  return agents.map(agent => ({ ...agent, attachments: agent.attachments || [] })); // Return a copy
+  if (!user) return [];
+  
+  // Admin 'gestor' can see all agents for management purposes
+  if (user.email === 'gestor') {
+    return agents.map(agent => ({ ...agent, attachments: agent.attachments || [] }));
+  }
+
+  // Regular users only see their own agents
+  return agents
+    .filter(agent => agent.ownerEmail === user.email)
+    .map(agent => ({ ...agent, attachments: agent.attachments || [] }));
 };
 
 export const getClientAgentById = async (id: string): Promise<ClientAgent | undefined> => {
@@ -95,11 +108,9 @@ export const getClientAgentByIdentifier = async (identifier: string): Promise<Cl
   return agent ? { ...agent, attachments: agent.attachments || [] } : undefined;
 };
 
-export const addClientAgent = async (formData: ClientAgentFormData): Promise<ClientAgent> => {
+export const addClientAgent = async (formData: ClientAgentFormData, owner: User): Promise<ClientAgent> => {
   await new Promise(resolve => setTimeout(resolve, 200));
   const newAgent: ClientAgent = {
-    // id, created_at, status are part of ClientAgent but not ClientAgentFormData (except status)
-    // attachments are part of ClientAgentFormData here due to direct form pass-through
     id: String(Date.now() + Math.random()), 
     created_at: new Date().toISOString(),
     name: formData.name,
@@ -108,6 +119,7 @@ export const addClientAgent = async (formData: ClientAgentFormData): Promise<Cli
     status: formData.status || 'active',
     geminiApiKey: formData.geminiApiKey || '',
     attachments: formData.attachments || [],
+    ownerEmail: owner.email,
   };
   agents.push(newAgent);
   persistAgents();

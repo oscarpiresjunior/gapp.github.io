@@ -2,27 +2,55 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import LoadingSpinner from '../components/common/LoadingSpinner';
+import { useAuth } from '../hooks/useAuth';
+import { addClientAgent, updateClientAgent } from '../services/clientAgentService';
+import { ClientAgentFormData } from '../types';
 
 const PaymentPage: React.FC = () => {
   const [paymentStatus, setPaymentStatus] = useState<'processing' | 'success' | 'failed'>('processing');
   const navigate = useNavigate();
   const location = useLocation();
-  const signupState = location.state as { email?: string, name?: string } | undefined;
+  const { user, updateCurrentUser } = useAuth();
+
+  const state = location.state as { pendingAgentData?: ClientAgentFormData, agentIdToUpdate?: string } | undefined;
+  const pendingAgentData = state?.pendingAgentData;
+  const agentIdToUpdate = state?.agentIdToUpdate;
+
 
   useEffect(() => {
+    if (!pendingAgentData || !user) {
+      setPaymentStatus('failed');
+      return;
+    }
+
     // Simulate payment processing
-    const timer = setTimeout(() => {
-      // Simulate a successful payment
-      setPaymentStatus('success');
+    const timer = setTimeout(async () => {
+      try {
+        // --- This is where the backend webhook logic is simulated ---
+        // 1. Update user status to 'active'
+        updateCurrentUser({ status: 'active' });
+
+        // 2. Create or update the agent that triggered the flow
+        if (agentIdToUpdate) {
+          await updateClientAgent(agentIdToUpdate, pendingAgentData);
+        } else {
+          await addClientAgent(pendingAgentData, user);
+        }
+
+        // 3. Set status to success to show the confirmation UI
+        setPaymentStatus('success');
+
+      } catch(error) {
+        console.error("Error during post-payment simulation:", error);
+        setPaymentStatus('failed');
+      }
     }, 3000); // 3 seconds delay
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [pendingAgentData, user, updateCurrentUser, agentIdToUpdate]);
 
   const handleProceedToDashboard = () => {
-    // In a real app, the user might be automatically logged in or session established.
-    // Here, we redirect to login, and they'd use the standard admin credentials for the demo.
-    navigate('/login');
+    navigate('/admin/dashboard');
   };
 
   return (
@@ -34,13 +62,13 @@ const PaymentPage: React.FC = () => {
 
         {paymentStatus === 'processing' && (
           <>
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">Processando Pagamento...</h2>
+            <h2 className="text-2xl font-semibold text-gray-800 mb-4">Processando Assinatura...</h2>
             <p className="text-gray-600 mb-8">
-              Estamos processando sua assinatura do Plano GApp Pro (R$ 50,00/mês).
+              Estamos ativando sua assinatura do Plano GApp Pro (R$ 50,00/mês).
               Por favor, aguarde. Isso é uma simulação.
             </p>
             <LoadingSpinner size="w-12 h-12" />
-            <p className="mt-4 text-sm text-gray-500">Simulando integração com Stripe...</p>
+            <p className="mt-4 text-sm text-gray-500">Redirecionando para um checkout seguro (simulado)...</p>
           </>
         )}
 
@@ -49,44 +77,38 @@ const PaymentPage: React.FC = () => {
             <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-brazil-green mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <h2 className="text-2xl font-bold text-brazil-green mb-3">Pagamento Aprovado!</h2>
-            {signupState?.name && <p className="text-xl text-gray-700 mb-2">Bem-vindo(a) ao GApp, {signupState.name}!</p>}
-            <p className="text-gray-600 mb-6">
-              Sua assinatura do Plano GApp Pro foi ativada com sucesso.
-              Um email de boas-vindas e confirmação (simulado) foi enviado para {signupState?.email || 'seu email'}.
-            </p>
+            <h2 className="text-2xl font-bold text-brazil-green mb-3">Assinatura Ativada!</h2>
+            {user?.name && <p className="text-xl text-gray-700 mb-2">Parabéns, {user.name}!</p>}
             <p className="text-gray-600 mb-8">
-              Agora você pode acessar o painel de gestão para criar e configurar seus agentes de IA.
+              Sua conta está ativa e seu GApp foi salvo com sucesso.
+              Agora você pode acessar o painel de gestão para ver seu agente em ação.
             </p>
             <button
               onClick={handleProceedToDashboard}
               className="w-full bg-brazil-blue text-white font-semibold py-3 px-6 rounded-lg shadow hover:bg-blue-700 transition duration-200 text-lg"
             >
-              Acessar Painel de Gestão
+              Ir para Meus GApps
             </button>
           </>
         )}
 
-        {paymentStatus === 'failed' && ( // Placeholder for potential future simulation
+        {paymentStatus === 'failed' && (
            <>
             <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-red-500 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <h2 className="text-2xl font-bold text-red-500 mb-3">Falha no Pagamento</h2>
+            <h2 className="text-2xl font-bold text-red-500 mb-3">Falha na Ativação</h2>
             <p className="text-gray-600 mb-6">
-              Houve um problema ao processar seu pagamento. Por favor, tente novamente ou contate o suporte.
+              Houve um problema ao ativar sua conta ou salvar seu agente. Por favor, tente novamente a partir do seu painel.
             </p>
             <Link
-              to="/signup"
+              to="/admin/dashboard"
               className="w-full block bg-brazil-yellow text-brazil-blue font-semibold py-3 px-6 rounded-lg shadow hover:bg-yellow-300 transition duration-200 text-lg"
             >
-              Tentar Novamente
+              Voltar ao Painel
             </Link>
           </>
         )}
-         <p className="mt-8 text-sm text-gray-500">
-            Retornar para <Link to="/" className="text-brazil-blue hover:underline">Página Inicial</Link>.
-        </p>
       </div>
     </div>
   );

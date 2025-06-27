@@ -2,20 +2,23 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { ClientAgent } from '../../types';
-import { getClientAgents, deleteClientAgent } from '../../services/clientAgentService';
+import { getClientAgents, deleteClientAgent, updateClientAgent } from '../../services/clientAgentService';
 import ClientCard from '../../components/admin/ClientCard';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
+import { useAuth } from '../../hooks/useAuth';
 
 const AdminDashboardPage: React.FC = () => {
   const [agents, setAgents] = useState<ClientAgent[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { user } = useAuth();
 
   const fetchAgents = useCallback(async () => {
+    if (!user) return;
     setIsLoading(true);
     setError(null);
     try {
-      const fetchedAgents = await getClientAgents();
+      const fetchedAgents = await getClientAgents(user);
       setAgents(fetchedAgents);
     } catch (err) {
       setError('Falha ao carregar os agentes. Tente novamente.');
@@ -23,15 +26,19 @@ const AdminDashboardPage: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     fetchAgents();
   }, [fetchAgents]);
 
   const handleDeleteAgent = async (id: string) => {
+    // Permission is checked by user's view (admin sees all, user sees their own)
+    const agentToDelete = agents.find(agent => agent.id === id);
+    if (!agentToDelete) return;
+
     if (window.confirm('Tem certeza que deseja excluir este agente? Esta ação não pode ser desfeita.')) {
-      setIsLoading(true); // Consider a more granular loading state for deletion
+      setIsLoading(true);
       try {
         await deleteClientAgent(id);
         setAgents(prevAgents => prevAgents.filter(agent => agent.id !== id));
@@ -39,8 +46,27 @@ const AdminDashboardPage: React.FC = () => {
         setError('Falha ao excluir o agente.');
         console.error(err);
       } finally {
-        setIsLoading(false); // Reset global loading or use specific delete loading
+        setIsLoading(false);
       }
+    }
+  };
+
+  const handleStatusToggle = async (id: string, newStatus: 'active' | 'inactive') => {
+    const originalAgents = [...agents];
+    // Optimistic UI update for responsiveness
+    setAgents(prevAgents => 
+      prevAgents.map(agent => 
+        agent.id === id ? { ...agent, status: newStatus } : agent
+      )
+    );
+
+    try {
+      await updateClientAgent(id, { status: newStatus });
+    } catch (err) {
+      setError('Falha ao atualizar o status do agente.');
+      console.error(err);
+      // Revert UI on failure
+      setAgents(originalAgents);
     }
   };
 
@@ -72,11 +98,26 @@ const AdminDashboardPage: React.FC = () => {
       </div>
 
       {agents.length === 0 && !isLoading ? (
-        <p className="text-gray-600 text-center py-10">Nenhum agente GApp encontrado. Adicione um novo para começar!</p>
+        <div className="text-center py-10 px-6 bg-white rounded-lg shadow-md">
+            <h3 className="text-xl font-semibold text-gray-700">Bem-vindo(a), {user?.name}!</h3>
+            <p className="text-gray-600 mt-2">Você ainda não tem nenhum agente GApp.</p>
+            <p className="text-gray-600 mt-1">Crie seu primeiro agente para começar a interagir!</p>
+             <Link
+              to="/admin/clients/new"
+              className="mt-6 inline-block bg-brazil-green text-white font-semibold py-2 px-5 rounded-lg shadow hover:bg-green-700 transition duration-200"
+            >
+              Criar meu primeiro GApp
+            </Link>
+        </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {agents.map(agent => (
-            <ClientCard key={agent.id} agent={agent} onDelete={handleDeleteAgent} />
+            <ClientCard 
+              key={agent.id} 
+              agent={agent} 
+              onDelete={handleDeleteAgent}
+              onStatusChange={handleStatusToggle} 
+            />
           ))}
         </div>
       )}

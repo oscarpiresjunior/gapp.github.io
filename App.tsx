@@ -8,9 +8,11 @@ import AdminClientEditPage from './pages/admin/AdminClientEditPage';
 import ChatInterfacePage from './pages/ChatInterfacePage';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import AdminLayout from './components/admin/AdminLayout';
-import LandingPage from './pages/LandingPage'; // New Import
-import SignupPage from './pages/SignupPage'; // New Import
-import PaymentPage from './pages/PaymentPage'; // New Import
+import LandingPage from './pages/LandingPage';
+import SignupPage from './pages/SignupPage';
+import PaymentPage from './pages/PaymentPage';
+import WebhookSimulatorPage from './pages/admin/WebhookSimulatorPage';
+import ConversasPage from './pages/admin/ConversasPage'; // New Import
 
 const App: React.FC = () => {
   return (
@@ -18,7 +20,7 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" element={<LandingPage />} /> 
         <Route path="/signup" element={<SignupPage />} />
-        <Route path="/payment-simulation" element={<PaymentPage />} />
+        <Route path="/payment" element={<PaymentPage />} />
         <Route path="/login" element={<LoginPage />} />
         
         <Route path="/admin" element={
@@ -27,8 +29,10 @@ const App: React.FC = () => {
           </ProtectedRoute>
         }>
           <Route path="dashboard" element={<AdminDashboardPage />} />
+          <Route path="conversas" element={<ConversasPage />} /> {/* New Route */}
           <Route path="clients/new" element={<AdminClientCreatePage />} />
           <Route path="clients/edit/:agentId" element={<AdminClientEditPage />} />
+          <Route path="webhook-simulator" element={<WebhookSimulatorPage />} /> 
           <Route index element={<Navigate to="dashboard" replace />} />
         </Route>
         

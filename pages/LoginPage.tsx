@@ -5,7 +5,7 @@ import { useAuth } from '../hooks/useAuth';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 
 const LoginPage: React.FC = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const { login, isLoading, isAuthenticated } = useAuth();
@@ -24,7 +24,7 @@ const LoginPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    const success = await login(username, password);
+    const success = await login(email, password);
     if (success) {
       const from = location.state?.from?.pathname || '/admin/dashboard';
       navigate(from, { replace: true });
@@ -44,24 +44,24 @@ const LoginPage: React.FC = () => {
             Acessar Painel GApp
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Entre com suas credenciais de gestor.
+            Entre com seu email e senha.
           </p>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           {error && <p className="text-red-500 text-sm text-center p-2 bg-red-100 rounded-md">{error}</p>}
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
-              <label htmlFor="username" className="sr-only">Usuário</label>
+              <label htmlFor="email" className="sr-only">Email</label>
               <input
-                id="username"
-                name="username"
-                type="text"
-                autoComplete="username"
+                id="email"
+                name="email"
+                type="text" // Use text to allow "gestor" login, but guide users to use email
+                autoComplete="email"
                 required
                 className="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-brazil-blue focus:border-brazil-blue focus:z-10 sm:text-sm"
-                placeholder="Usuário (admin)"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Email ou usuário 'gestor'"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
             <div>

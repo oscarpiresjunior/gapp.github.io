@@ -1,32 +1,45 @@
-import React, { useState, useEffect, useCallback } from 'react';
+
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
-import { ClientAgent, ChatMessage, GroundingMetadata, GroundingChunk, ChatMessageAttachment, ClientAgentAttachment } from '../types';
+import { ClientAgent, ChatMessage, GroundingMetadata, GroundingChunk, ChatMessageAttachment } from '../types';
 import { getClientAgentByIdentifier } from '../services/clientAgentService';
-import { streamChatResponse, resetChatSession } from '../services/geminiService';
-import ChatWindow from '../components/chat/ChatWindow'; // ChatWindow itself doesn't need changes for this logic
+import { streamChatResponse } from '../services/geminiService';
+import * as conversationService from '../services/conversationService';
+import ChatWindow from '../components/chat/ChatWindow';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 
-// Regex to find [SHOW_FILE:filename.ext]
 const SHOW_FILE_REGEX = /\[SHOW_FILE:([^\]]+)\]/g;
 
 const ChatInterfacePage: React.FC = () => {
   const { identifier } = useParams<{ identifier: string }>();
   const [agent, setAgent] = useState<ClientAgent | null>(null);
+  const [conversationId, setConversationId] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoadingAgent, setIsLoadingAgent] = useState(true);
   const [isSendingMessage, setIsSendingMessage] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [currentGroundingChunks, setCurrentGroundingChunks] = useState<GroundingChunk[] | undefined>(undefined);
+  const pollingIntervalRef = useRef<number | null>(null);
 
-  useEffect(() => {
-    if (identifier) {
-      // Reset chat session specifically for this agent.
-      // The API key is passed during the call, so no need to pass it to resetChatSession.
-      resetChatSession(identifier); 
-      setMessages([]); 
-      setCurrentGroundingChunks(undefined);
+
+  const setupConversation = useCallback(async (agentData: ClientAgent) => {
+    const sessionConvId = sessionStorage.getItem(`gapp_conv_id_${agentData.id}`);
+    if (sessionConvId) {
+      const conv = await conversationService.getConversationById(sessionConvId);
+      if (conv) {
+        setConversationId(conv.id);
+        setMessages(conv.messages.map(m => ({...m, timestamp: new Date(m.timestamp)})));
+        return;
+      }
     }
-  }, [identifier]);
+    
+    // Create a new conversation if none exists for this session
+    const newConv = await conversationService.createConversation(agentData.id, agentData.ownerEmail || 'unknown');
+    setConversationId(newConv.id);
+    setMessages(newConv.messages.map(m => ({...m, timestamp: new Date(m.timestamp)})));
+    sessionStorage.setItem(`gapp_conv_id_${agentData.id}`, newConv.id);
+
+  }, []);
 
   const fetchAgentDetails = useCallback(async () => {
     if (!identifier) {
@@ -40,10 +53,11 @@ const ChatInterfacePage: React.FC = () => {
       const fetchedAgent = await getClientAgentByIdentifier(identifier);
       if (fetchedAgent) {
         if (fetchedAgent.status === 'inactive') {
-          setError(`O agente "${fetchedAgent.name}" está temporariamente indisponível.`);
+          setError('Este serviço está temporariamente indisponível. Por favor, entre em contato com o administrador.');
           setAgent(null);
         } else {
           setAgent(fetchedAgent);
+          await setupConversation(fetchedAgent);
         }
       } else {
         setError('Agente de chat não encontrado ou não configurado.');
@@ -54,14 +68,36 @@ const ChatInterfacePage: React.FC = () => {
     } finally {
       setIsLoadingAgent(false);
     }
-  }, [identifier]);
+  }, [identifier, setupConversation]);
 
   useEffect(() => {
     fetchAgentDetails();
   }, [fetchAgentDetails]);
 
-  const handleSendMessage = async (text: string) => { // Removed file parameter
-    if (!agent || !identifier || !text.trim()) return;
+  // Polling for human responses
+  useEffect(() => {
+    const poll = async () => {
+      if (!conversationId || document.hidden) return;
+      const conv = await conversationService.getConversationById(conversationId);
+      if (conv && conv.messages.length > messages.length) {
+        setMessages(conv.messages.map(m => ({...m, timestamp: new Date(m.timestamp)})));
+      }
+    };
+
+    if (conversationId) {
+      pollingIntervalRef.current = window.setInterval(poll, 3000); // Poll every 3 seconds
+    }
+
+    return () => {
+      if (pollingIntervalRef.current) {
+        clearInterval(pollingIntervalRef.current);
+      }
+    };
+  }, [conversationId, messages.length]);
+
+
+  const handleSendMessage = async (text: string) => {
+    if (!agent || !conversationId || !text.trim()) return;
 
     setIsSendingMessage(true);
     setCurrentGroundingChunks(undefined);
@@ -71,36 +107,42 @@ const ChatInterfacePage: React.FC = () => {
       text,
       sender: 'user',
       timestamp: new Date(),
-      // No user attachment handling here anymore
     };
-    setMessages(prev => [...prev, userMessage]);
     
-    const agentMessageId = String(Date.now() + 1);
-    // Add a placeholder for the agent's response
-    setMessages(prev => [...prev, { id: agentMessageId, text: '', sender: 'agent', timestamp: new Date() }]);
-    
-    let fullAgentResponseText = "";
-    let accumulatedTextForDisplay = ""; // Text cleaned of [SHOW_FILE] directives
+    // Add message to local state and persistent storage
+    const updatedMessages = await conversationService.addMessageToConversation(conversationId, userMessage);
+    setMessages(updatedMessages.map(m => ({...m, timestamp: new Date(m.timestamp)})));
 
+    // Check if AI is paused before trying to get a response
+    const currentConversation = await conversationService.getConversationById(conversationId);
+    if (currentConversation?.aiStatus === 'paused') {
+      setIsSendingMessage(false);
+      // Optional: Add a system message indicating the agent is busy
+      // For now, we just wait for the human to reply.
+      return;
+    }
+
+    const agentMessageId = String(Date.now() + 1);
+    const agentPlaceholder: ChatMessage = { id: agentMessageId, text: '', sender: 'agent', timestamp: new Date(), sentBy: 'ai' };
+    
+    setMessages(prev => [...prev, agentPlaceholder]);
+
+    let fullAgentResponseText = "";
+    
     try {
-      // Pass history *excluding* the current user message.
-      // The new message is sent separately in the `streamChatResponse` call.
-      const historyForGemini = [...messages]; 
+      const historyForGemini = [...updatedMessages]; 
 
       await streamChatResponse(
-        identifier,
         agent.master_prompt,
-        agent.geminiApiKey, // Pass agent-specific API key
-        text, // User's text message
+        agent.geminiApiKey,
+        text,
         historyForGemini,
         (chunkText, isFinal, groundingMetadata) => {
           fullAgentResponseText += chunkText;
-          accumulatedTextForDisplay += chunkText;
           
           setMessages(prev =>
             prev.map(msg => {
               if (msg.id === agentMessageId) {
-                // Clean the text for display (remove SHOW_FILE directives)
                 const displayText = fullAgentResponseText.replace(SHOW_FILE_REGEX, "").trim();
                 return { ...msg, text: displayText };
               }
@@ -115,29 +157,16 @@ const ChatInterfacePage: React.FC = () => {
           if (isFinal) {
             setIsSendingMessage(false);
             
-            // Process [SHOW_FILE:] directives from the complete response
             const fileMatches = [...fullAgentResponseText.matchAll(SHOW_FILE_REGEX)];
             let finalAgentMessageText = fullAgentResponseText.replace(SHOW_FILE_REGEX, "").trim();
             let finalAgentAttachment: ChatMessageAttachment | undefined = undefined;
 
             if (fileMatches.length > 0 && agent.attachments) {
-              // For simplicity, use the first matched file. A more complex UI might handle multiple.
               const fileNameToShow = fileMatches[0][1]; 
               const agentFile = agent.attachments.find(att => att.name === fileNameToShow);
 
               if (agentFile) {
-                finalAgentAttachment = {
-                  data: agentFile.data,
-                  mimeType: agentFile.mimeType,
-                  type: agentFile.type,
-                  name: agentFile.name,
-                };
-                 // Add a system message or modify agent message to show the file
-                 // For now, let's update the agent's message to include the attachment
-              } else {
-                 // Optionally, add a note if file mentioned by AI is not found
-                 console.warn(`AI tried to show file '${fileNameToShow}', but it was not found in agent attachments.`);
-                 finalAgentMessageText += `\n(Nota: Tentei mostrar o arquivo '${fileNameToShow}', mas não o encontrei.)`;
+                finalAgentAttachment = { data: agentFile.data, mimeType: agentFile.mimeType, type: agentFile.type, name: agentFile.name };
               }
             }
             
@@ -148,27 +177,20 @@ const ChatInterfacePage: React.FC = () => {
               timestamp: new Date(),
               attachment: finalAgentAttachment,
               isAIRenderedAttachment: !!finalAgentAttachment,
+              sentBy: 'ai',
             };
+            
+            // Persist the final AI message
+            conversationService.addMessageToConversation(conversationId, finalAgentMessage, true);
 
-            setMessages(prev => {
-                const msgs = [...prev];
-                const agentMsgIndex = msgs.findIndex(m => m.id === agentMessageId);
-                if (agentMsgIndex > -1) {
-                    msgs[agentMsgIndex] = finalAgentMessage;
-                } else { // Should not happen if placeholder was added
-                    msgs.push(finalAgentMessage);
-                }
-                return msgs;
-            });
+            setMessages(prev => prev.map(m => m.id === agentMessageId ? finalAgentMessage : m));
           }
         },
         (err) => {
           console.error("Gemini API Error:", err);
-          setMessages(prev =>
-            prev.map(msg =>
-              msg.id === agentMessageId ? { ...msg, text: "Desculpe, ocorreu um erro ao processar sua solicitação." } : msg
-            )
-          );
+          const errorMsg: ChatMessage = { id: agentMessageId, sender: 'agent', text: "Desculpe, ocorreu um erro ao processar sua solicitação.", timestamp: new Date(), sentBy: 'ai' };
+          conversationService.addMessageToConversation(conversationId, errorMsg, true);
+          setMessages(prev => prev.map(m => m.id === agentMessageId ? errorMsg : m));
           setError("Erro na comunicação com o assistente.");
           setIsSendingMessage(false);
         }
@@ -176,11 +198,9 @@ const ChatInterfacePage: React.FC = () => {
     } catch (apiError) {
        console.error("Failed to send message via streamChatResponse:", apiError);
        setIsSendingMessage(false);
-       setMessages(prev =>
-         prev.map(msg =>
-           msg.id === agentMessageId ? { ...msg, text: "Falha ao enviar mensagem. Tente novamente." } : msg
-         )
-       );
+       const failMsg: ChatMessage = { id: agentMessageId, sender: 'agent', text: "Falha ao enviar mensagem. Tente novamente.", timestamp: new Date(), sentBy: 'ai' };
+       conversationService.addMessageToConversation(conversationId, failMsg, true);
+       setMessages(prev => prev.map(m => m.id === agentMessageId ? failMsg : m));
     }
   };
 
@@ -197,11 +217,11 @@ const ChatInterfacePage: React.FC = () => {
     );
   }
 
-  if (error && !agent) { // Show error prominently if agent loading failed
+  if (error && !agent) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
         <div className="bg-white p-8 rounded-lg shadow-xl text-center">
-          <h2 className="text-2xl font-bold text-red-600 mb-4">Erro</h2>
+          <h2 className="text-2xl font-bold text-red-600 mb-4">Acesso Indisponível</h2>
           <p className="text-gray-700">{error}</p>
           <Link to="/" className="mt-6 inline-block bg-brazil-blue text-white py-2 px-4 rounded hover:bg-blue-700">
             Voltar para Início
@@ -211,7 +231,7 @@ const ChatInterfacePage: React.FC = () => {
     );
   }
   
-  if (!agent) { // Fallback if no agent and no specific error (e.g. inactive but no error set)
+  if (!agent) {
      return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
          <p className="text-gray-700">Agente de chat não disponível ou não encontrado.</p>
@@ -222,16 +242,15 @@ const ChatInterfacePage: React.FC = () => {
     );
   }
   
-  // Render chat window if agent is loaded, even if there was a non-critical error previously (now cleared)
   return (
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-brazil-blue to-brazil-green p-2 sm:p-4">
       <div className="w-full max-w-2xl h-[calc(100vh-2rem)] sm:h-[calc(100vh-4rem)] max-h-[800px] md:max-h-[700px]">
          <ChatWindow
             messages={messages}
-            onSendMessage={handleSendMessage} // onSendMessage now only takes text
+            onSendMessage={handleSendMessage}
             isSending={isSendingMessage}
             agentName={agent?.name}
-            isLoadingAgent={isLoadingAgent} // This will be false here, but kept for ChatWindow prop consistency
+            isLoadingAgent={isLoadingAgent}
             groundingChunks={currentGroundingChunks}
           />
       </div>
