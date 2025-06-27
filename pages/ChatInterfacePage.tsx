@@ -83,7 +83,9 @@ const ChatInterfacePage: React.FC = () => {
     let accumulatedTextForDisplay = ""; // Text cleaned of [SHOW_FILE] directives
 
     try {
-      const historyForGemini = [...messages, userMessage]; // Pass history *including* current user message
+      // Pass history *excluding* the current user message.
+      // The new message is sent separately in the `streamChatResponse` call.
+      const historyForGemini = [...messages]; 
 
       await streamChatResponse(
         identifier,
