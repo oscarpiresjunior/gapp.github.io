@@ -10,6 +10,7 @@ const initializeMockData = (): ClientAgent[] => {
       url_identifier: 'startupsocial',
       master_prompt: `You are a helpful assistant for Startup Social. Your goal is to provide information about our services and encourage users to sign up for our newsletter. Be friendly and engaging. 
 Our main services are: community building, social media strategy, and content creation. Our newsletter offers weekly tips on social impact.
+When asked for a payment link, provide this one: https://payment.example.com/startup. Our website is www.startupsocial.example.com.
 You have access to the following files:
 - 'startup_social_logo.png' (image)
 If you want to show a file, include [SHOW_FILE:filename.ext] in your response. For example, to show the logo, say [SHOW_FILE:startup_social_logo.png].`,
