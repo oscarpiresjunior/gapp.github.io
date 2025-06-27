@@ -1,5 +1,5 @@
 import { GoogleGenAI, Chat, GenerateContentResponse, Part, GroundingMetadata, Content } from "@google/genai";
-import { API_KEY as FALLBACK_API_KEY, GEMINI_TEXT_MODEL } from '../constants';
+import { GEMINI_TEXT_MODEL } from '../constants';
 import { ChatMessage, ClientAgentAttachment, ChatMessageAttachment } from "../types"; // ChatMessageAttachment used for display
 
 // Store GoogleGenAI instances mapped by API key to reuse them
@@ -7,9 +7,9 @@ const aiInstances: Record<string, GoogleGenAI> = {};
 const chatInstances: Record<string, Chat> = {}; // Key: agentIdentifier
 
 const getAiInstance = (agentApiKey?: string): GoogleGenAI => {
-  const apiKeyToUse = agentApiKey || FALLBACK_API_KEY;
+  const apiKeyToUse = agentApiKey || process.env.API_KEY;
   if (!apiKeyToUse) {
-    // This should ideally not happen if FALLBACK_API_KEY is set or agentApiKey is required
+    // This should ideally not happen if the fallback API_KEY is set or agentApiKey is required
     console.error("API_KEY is not available. Please ensure the API_KEY environment variable is configured or an agent-specific key is provided.");
     throw new Error("Gemini API Key is missing.");
   }
