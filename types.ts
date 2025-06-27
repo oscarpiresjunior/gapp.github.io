@@ -42,6 +42,8 @@ export interface Conversation {
   agentId: string; // Which agent this conversation is with
   ownerEmail: string; // Who owns the agent
   leadIdentifier: string; // A unique ID for the end-user/lead
+  leadName?: string; // New: Lead's name, collected by AI
+  leadEmail?: string; // New: Lead's email, collected by AI
   messages: ChatMessage[];
   lastMessageTimestamp: number;
   aiStatus: 'active' | 'paused';

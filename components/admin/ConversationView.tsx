@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { Conversation, ChatMessage } from '../../types';
 import * as conversationService from '../../services/conversationService';
@@ -39,7 +40,7 @@ const ConversationView: React.FC<ConversationViewProps> = ({ conversation, onUpd
           timestamp: new Date(),
       };
       
-      const updatedMessages = await conversationService.addMessageToConversation(conversation.id, humanMessage);
+      await conversationService.addMessageToConversation(conversation.id, humanMessage);
       const updatedConv = await conversationService.getConversationById(conversation.id);
       if(updatedConv){
         onUpdate(updatedConv);
@@ -50,32 +51,43 @@ const ConversationView: React.FC<ConversationViewProps> = ({ conversation, onUpd
   return (
     <div className="h-full flex flex-col">
       {/* Header */}
-      <div className="flex-shrink-0 p-4 border-b border-gray-200 flex justify-between items-center bg-gray-50">
+      <div className="flex-shrink-0 p-4 border-b border-gray-200 flex justify-between items-start bg-gray-50">
         <div>
           <h3 className="text-lg font-semibold text-gray-800">{conversation.leadIdentifier}</h3>
-          <p className="text-xs text-gray-500">ID da Conversa: {conversation.id}</p>
+          
+          {/* --- NEW: Display Lead Info --- */}
+          {(conversation.leadName || conversation.leadEmail) && (
+             <div className="mt-1 border-t pt-2">
+                {conversation.leadName && <p className="text-sm text-gray-700"><strong>Nome:</strong> {conversation.leadName}</p>}
+                {conversation.leadEmail && <p className="text-sm text-gray-700"><strong>Email:</strong> {conversation.leadEmail}</p>}
+             </div>
+          )}
+          
+          <p className="text-xs text-gray-500 mt-2">ID da Conversa: {conversation.id}</p>
         </div>
-        <div className="flex items-center space-x-3">
-            <span className={`text-sm font-medium ${conversation.aiStatus === 'active' ? 'text-green-600' : 'text-blue-600'}`}>
-                {conversation.aiStatus === 'active' ? 'Atendimento por IA' : 'Atendimento Humano'}
-            </span>
-            <button
-                role="switch"
-                aria-checked={conversation.aiStatus === 'active'}
-                onClick={handleStatusToggle}
-                disabled={isUpdatingStatus}
-                className={`relative inline-flex items-center h-6 rounded-full w-11 transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brazil-blue disabled:opacity-50 ${
-                conversation.aiStatus === 'active' ? 'bg-brazil-green' : 'bg-blue-500'
-                }`}
-                aria-label={conversation.aiStatus === 'active' ? 'Pausar IA e assumir' : 'Retomar atendimento por IA'}
-            >
-                <span
-                aria-hidden="true"
-                className={`inline-block w-4 h-4 transform bg-white rounded-full transition-transform duration-200 ease-in-out ${
-                    conversation.aiStatus === 'active' ? 'translate-x-6' : 'translate-x-1'
-                }`}
-                />
-            </button>
+        <div className="flex flex-col items-end space-y-2">
+            <div className="flex items-center space-x-3">
+                <span className={`text-sm font-medium ${conversation.aiStatus === 'active' ? 'text-green-600' : 'text-blue-600'}`}>
+                    {conversation.aiStatus === 'active' ? 'Atendimento por IA' : 'Atendimento Humano'}
+                </span>
+                <button
+                    role="switch"
+                    aria-checked={conversation.aiStatus === 'active'}
+                    onClick={handleStatusToggle}
+                    disabled={isUpdatingStatus}
+                    className={`relative inline-flex items-center h-6 rounded-full w-11 transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brazil-blue disabled:opacity-50 ${
+                    conversation.aiStatus === 'active' ? 'bg-brazil-green' : 'bg-blue-500'
+                    }`}
+                    aria-label={conversation.aiStatus === 'active' ? 'Pausar IA e assumir' : 'Retomar atendimento por IA'}
+                >
+                    <span
+                    aria-hidden="true"
+                    className={`inline-block w-4 h-4 transform bg-white rounded-full transition-transform duration-200 ease-in-out ${
+                        conversation.aiStatus === 'active' ? 'translate-x-6' : 'translate-x-1'
+                    }`}
+                    />
+                </button>
+            </div>
         </div>
       </div>
       

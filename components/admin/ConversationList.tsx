@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Conversation } from '../../types';
 
@@ -54,6 +55,14 @@ const ConversationList: React.FC<ConversationListProps> = ({ conversations, sele
                 {new Date(conv.lastMessageTimestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
               </span>
             </div>
+
+            {/* --- NEW: Display Lead Info --- */}
+            {(conv.leadName || conv.leadEmail) && (
+              <p className="text-xs text-green-700 mt-1 truncate font-medium" title={`${conv.leadName || ''} ${conv.leadEmail || ''}`}>
+                ★ {conv.leadName || conv.leadEmail}
+              </p>
+            )}
+
             <p className="text-sm text-gray-600 mt-1 truncate" title={getLastMessageSnippet(conv)}>
               {getLastMessageSnippet(conv)}
             </p>
