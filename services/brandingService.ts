@@ -13,13 +13,16 @@ export const saveLogo = (base64Logo: string): void => {
 };
 
 /**
- * Retrieves the logo base64 string from localStorage.
- * @returns The base64 string or null if not found.
+ * Retrieves the logo base64 string from localStorage, simulating an async API call.
+ * @returns A promise that resolves to the base64 string or null if not found.
  */
-export const getLogo = (): string | null => {
+export const getLogo = async (): Promise<string | null> => {
+  // Simulate a short network delay for fetching public data
+  await new Promise(resolve => setTimeout(resolve, 50));
   try {
     return localStorage.getItem(BRANDING_LOGO_KEY);
-  } catch (error) {
+  } catch (error)
+ {
     console.error("Error retrieving logo from localStorage:", error);
     return null;
   }

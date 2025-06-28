@@ -14,12 +14,17 @@ export const BrandingProvider: React.FC<{ children: ReactNode }> = ({ children }
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Load the logo from localStorage on initial app load
-    const storedLogo = brandingService.getLogo();
-    if (storedLogo) {
-      setLogoUrl(storedLogo);
-    }
-    setIsLoading(false);
+    // Asynchronously load the logo on initial app load to mimic a public API call
+    const fetchLogo = async () => {
+      setIsLoading(true);
+      const storedLogo = await brandingService.getLogo();
+      if (storedLogo) {
+        setLogoUrl(storedLogo);
+      }
+      setIsLoading(false);
+    };
+
+    fetchLogo();
   }, []);
 
   const updateLogo = (newLogo: string | null) => {
