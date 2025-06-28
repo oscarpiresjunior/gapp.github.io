@@ -2,14 +2,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+const GAPPCHAT_LOGO_BASE64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABGAAAAIQCAYAAAC0s/33AAAAAXNSR0IArs4c6QAAIABJREFUeF7svQeQXVV1/v1WWl/aGb1bSAghBBJCgOweiyOCjI4o6qgoiKM4jisvI44zjiOOjDPLM6OOzDiOI+sMss5IqCCKyA4gCCQkQCghvXv3tPpaVf3N+XJGR0hISKTbS/d976n/+7Q6derUVT1VdenTJ0+fvmsIQoAQAAIQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAA-';
+
 const LandingPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 text-gray-800">
       {/* Navigation */}
       <nav className="bg-white shadow-sm sticky top-0 z-50">
-        <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-          <Link to="/" className="text-3xl font-bold text-brazil-blue">
-            GAPPCHAT
+        <div className="container mx-auto px-6 py-3 flex justify-between items-center">
+          <Link to="/">
+            <img src={GAPPCHAT_LOGO_BASE64} alt="GAPPCHAT Logo" className="h-10 w-auto" />
           </Link>
           <div>
             <Link
@@ -28,15 +30,15 @@ const LandingPage: React.FC = () => {
           <h1 className="text-4xl lg:text-6xl font-extrabold mb-6 leading-tight">
             Crie Agentes de IA Personalizados para seu Negócio!
           </h1>
-          <p className="text-lg lg:text-2xl mb-10 text-brazil-yellow font-medium">
+          <p className="text-lg lg:text-2xl mb-10 text-gray-200 max-w-4xl mx-auto">
             Com GAPPCHAT, configure assistentes virtuais inteligentes com seus próprios prompts,
             API Gemini e arquivos de referência.
           </p>
           <Link
             to="/signup"
-            className="bg-brazil-yellow text-brazil-blue text-lg font-bold py-4 px-10 rounded-lg shadow-xl hover:bg-yellow-300 transition duration-300 transform hover:scale-105"
+            className="bg-brazil-yellow text-brazil-blue text-xl font-bold py-4 px-12 rounded-lg shadow-xl hover:bg-yellow-300 transition duration-300 transform hover:scale-105"
           >
-            Contratar Agora (R$ 50/mês)
+            Comece Grátis
           </Link>
         </div>
       </header>
@@ -112,10 +114,9 @@ const LandingPage: React.FC = () => {
           <div className="flex flex-col items-center space-y-6">
             <Link
               to="/signup"
-              className="bg-brazil-green text-white text-lg font-bold py-3 px-8 rounded-lg shadow-md hover:bg-green-700 transition duration-300 flex flex-col items-center w-full max-w-xs"
+              className="bg-brazil-green text-white text-lg font-bold py-3 px-8 rounded-lg shadow-md hover:bg-green-700 transition duration-300 w-full max-w-xs"
             >
-              <span>Assine o GAPPCHAT</span>
-              <span className="text-base font-normal mt-1">Apenas R$ 50/mês</span>
+              Comece Grátis
             </Link>
             <Link
               to="/login"
