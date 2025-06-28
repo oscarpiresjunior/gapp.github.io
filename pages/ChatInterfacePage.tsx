@@ -21,7 +21,7 @@ const ChatInterfacePage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [currentGroundingChunks, setCurrentGroundingChunks] = useState<GroundingChunk[] | undefined>(undefined);
   const pollingIntervalRef = useRef<number | null>(null);
-  const { logoUrl } = useBranding();
+  const { logoUrl, isLoading: isBrandingLoading } = useBranding();
 
 
   const setupConversation = useCallback(async (agentData: ClientAgent) => {
@@ -265,7 +265,9 @@ const ChatInterfacePage: React.FC = () => {
         <div className="flex-shrink-0 text-center py-2 border-t border-gray-200">
           <a href="/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-xs text-gray-500 hover:text-gray-800 transition">
             Criado com
-            {logoUrl ? (
+            {isBrandingLoading ? (
+                 <div className="h-6 w-20 bg-gray-200 rounded animate-pulse ml-1.5"></div>
+            ) : logoUrl ? (
                  <img src={logoUrl} alt="GAPPCHAT Logo" className="h-6 ml-1.5" />
             ) : (
                 <span className="font-bold text-sm ml-1.5">GAPPCHAT</span>

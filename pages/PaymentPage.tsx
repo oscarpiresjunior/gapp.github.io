@@ -5,12 +5,14 @@ import LoadingSpinner from '../components/common/LoadingSpinner';
 import { useAuth } from '../hooks/useAuth';
 import { addClientAgent, updateClientAgent } from '../services/clientAgentService';
 import { ClientAgentFormData } from '../types';
+import { useBranding } from '../hooks/useBranding';
 
 const PaymentPage: React.FC = () => {
   const [paymentStatus, setPaymentStatus] = useState<'processing' | 'success' | 'failed'>('processing');
   const navigate = useNavigate();
   const location = useLocation();
   const { user, updateCurrentUser } = useAuth();
+  const { logoUrl, isLoading: isBrandingLoading } = useBranding();
 
   const state = location.state as { pendingAgentData?: ClientAgentFormData, agentIdToUpdate?: string } | undefined;
   const pendingAgentData = state?.pendingAgentData;
@@ -56,8 +58,14 @@ const PaymentPage: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8 text-center">
       <div className="max-w-md w-full bg-white p-10 rounded-xl shadow-2xl">
-        <Link to="/" className="flex justify-center mb-6">
-            <h1 className="text-5xl font-bold text-brazil-blue">GAPPCHAT</h1>
+        <Link to="/" className="flex justify-center mb-6 h-12 items-center">
+            {isBrandingLoading ? (
+                <div className="h-12 w-48 bg-gray-200 rounded animate-pulse"></div>
+            ) : logoUrl ? (
+                <img src={logoUrl} alt="GAPPCHAT Logo" className="h-12 w-auto" />
+            ) : (
+                <h1 className="text-5xl font-bold text-brazil-blue">GAPPCHAT</h1>
+            )}
         </Link>
 
         {paymentStatus === 'processing' && (

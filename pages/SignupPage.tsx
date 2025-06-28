@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import { useAuth } from '../hooks/useAuth';
+import { useBranding } from '../hooks/useBranding';
 
 const SignupPage: React.FC = () => {
   const [name, setName] = useState('');
@@ -12,7 +13,8 @@ const SignupPage: React.FC = () => {
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const { signup, login, isLoading } = useAuth();
+  const { signup, login, isLoading: isAuthLoading } = useAuth();
+  const { logoUrl, isLoading: isBrandingLoading } = useBranding();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -58,8 +60,14 @@ const SignupPage: React.FC = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-xl shadow-2xl">
         <div>
-          <Link to="/" className="flex justify-center mb-6">
-             <h1 className="text-5xl font-bold text-brazil-blue">GAPPCHAT</h1>
+          <Link to="/" className="flex justify-center mb-6 h-12 items-center">
+            {isBrandingLoading ? (
+              <div className="h-12 w-48 bg-gray-200 rounded animate-pulse"></div>
+            ) : logoUrl ? (
+              <img src={logoUrl} alt="GAPPCHAT Logo" className="h-12 w-auto" />
+            ) : (
+              <h1 className="text-5xl font-bold text-brazil-blue">GAPPCHAT</h1>
+            )}
           </Link>
           <h2 className="text-center text-3xl font-extrabold text-gray-900">
             Crie sua Conta GAPPCHAT
@@ -157,10 +165,10 @@ const SignupPage: React.FC = () => {
           <div>
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={isAuthLoading}
               className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-brazil-green hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50"
             >
-              {isLoading ? <LoadingSpinner size="w-5 h-5" /> : 'Criar Conta e Continuar'}
+              {isAuthLoading ? <LoadingSpinner size="w-5 h-5" /> : 'Criar Conta e Continuar'}
             </button>
           </div>
         </form>

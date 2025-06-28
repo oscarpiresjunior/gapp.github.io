@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { useBranding } from '../hooks/useBranding';
 
 const LandingPage: React.FC = () => {
-  const { logoUrl } = useBranding();
+  const { logoUrl, isLoading } = useBranding();
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-800">
@@ -12,7 +12,9 @@ const LandingPage: React.FC = () => {
       <nav className="bg-white shadow-sm sticky top-0 z-50">
         <div className="container mx-auto px-6 py-3 flex justify-between items-center">
           <Link to="/">
-            {logoUrl ? (
+            {isLoading ? (
+                <div className="h-10 w-32 bg-gray-200 rounded animate-pulse"></div>
+            ) : logoUrl ? (
                 <img src={logoUrl} alt="GAPPCHAT Logo" className="h-10 w-auto" />
             ) : (
                 <h1 className="text-3xl font-bold text-brazil-blue">GAPPCHAT</h1>
@@ -93,7 +95,7 @@ const LandingPage: React.FC = () => {
               },
                {
                 icon: (
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-brazil-green mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-brazil-green mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
                 ),
                 title: 'Grounding com Google Search',
                 description: 'Permita que seus agentes busquem informações atualizadas na web para respostas mais precisas.',
