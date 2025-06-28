@@ -7,9 +7,9 @@ import { streamChatResponse } from '../services/geminiService';
 import * as conversationService from '../services/conversationService';
 import ChatWindow from '../components/chat/ChatWindow';
 import LoadingSpinner from '../components/common/LoadingSpinner';
+import { useBranding } from '../hooks/useBranding';
 
 const SHOW_FILE_REGEX = /\[SHOW_FILE:([^\]]+)\]/g;
-const GAPPCHAT_LOGO_BASE64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABGAAAAIQCAYAAAC0s/33AAAAAXNSR0IArs4c6QAAIABJREFUeF7svQeQXVV1/v1WWl/aGb1bSAghBBJCgOweiyOCjI4o6qgoiKM4jisvI44zjiOOjDPLM6OOzDiOI+sMss5IqCCKyA4gCCQkQCghvXv3tPpaVf3N+XJGR0hISKTbS/d976n/+7Q6derUVT1VdenTJ0+fvmsIQoAQAAIQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAA-';
 
 const ChatInterfacePage: React.FC = () => {
   const { identifier } = useParams<{ identifier: string }>();
@@ -21,6 +21,7 @@ const ChatInterfacePage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [currentGroundingChunks, setCurrentGroundingChunks] = useState<GroundingChunk[] | undefined>(undefined);
   const pollingIntervalRef = useRef<number | null>(null);
+  const { logoUrl } = useBranding();
 
 
   const setupConversation = useCallback(async (agentData: ClientAgent) => {
@@ -262,9 +263,13 @@ const ChatInterfacePage: React.FC = () => {
           />
         </div>
         <div className="flex-shrink-0 text-center py-2 border-t border-gray-200">
-          <a href="https://gappia.netlify.app" target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-xs text-gray-500 hover:text-gray-800 transition">
+          <a href="/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-xs text-gray-500 hover:text-gray-800 transition">
             Criado com
-            <img src={GAPPCHAT_LOGO_BASE64} alt="GAPPCHAT" style={{ height: '24px', marginLeft: '6px' }} />
+            {logoUrl ? (
+                 <img src={logoUrl} alt="GAPPCHAT Logo" className="h-6 ml-1.5" />
+            ) : (
+                <span className="font-bold text-sm ml-1.5">GAPPCHAT</span>
+            )}
           </a>
         </div>
       </div>

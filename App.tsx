@@ -12,7 +12,8 @@ import LandingPage from './pages/LandingPage';
 import SignupPage from './pages/SignupPage';
 import PaymentPage from './pages/PaymentPage';
 import WebhookSimulatorPage from './pages/admin/WebhookSimulatorPage';
-import ConversasPage from './pages/admin/ConversasPage'; // New Import
+import ConversasPage from './pages/admin/ConversasPage';
+import BrandingPage from './pages/admin/BrandingPage'; // New Import
 
 const App: React.FC = () => {
   return (
@@ -29,7 +30,8 @@ const App: React.FC = () => {
           </ProtectedRoute>
         }>
           <Route path="dashboard" element={<AdminDashboardPage />} />
-          <Route path="conversas" element={<ConversasPage />} /> {/* New Route */}
+          <Route path="conversas" element={<ConversasPage />} />
+          <Route path="personalizar" element={<BrandingPage />} /> {/* New Route */}
           <Route path="clients/new" element={<AdminClientCreatePage />} />
           <Route path="clients/edit/:agentId" element={<AdminClientEditPage />} />
           <Route path="webhook-simulator" element={<WebhookSimulatorPage />} /> 

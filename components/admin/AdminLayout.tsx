@@ -1,13 +1,11 @@
-
 import React from 'react';
 import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
+import { useBranding } from '../../hooks/useBranding';
 
-const GAPPCHAT_LOGO_BASE64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABGAAAAIQCAYAAAC0s/33AAAAAXNSR0IArs4c6QAAIABJREFUeF7svQeQXVV1/v1WWl/aGb1bSAghBBJCgOweiyOCjI4o6qgoiKM4jisvI44zjiOOjDPLM6OOzDiOI+sMss5IqCCKyA4gCCQkQCghvXv3tPpaVf3N+XJGR0hISKTbS/d976n/+7Q6derUVT1VdenTJ0+fvmsIQoAQAAIQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAA';
-
-const NavLink: React.FC<{ to: string; children: React.ReactNode }> = ({ to, children }) => {
+const NavLink: React.FC<{ to: string; children: React.ReactNode; exact?: boolean }> = ({ to, children, exact = false }) => {
   const location = useLocation();
-  const isActive = location.pathname.startsWith(to);
+  const isActive = exact ? location.pathname === to : location.pathname.startsWith(to);
   
   return (
     <Link 
@@ -26,6 +24,7 @@ const NavLink: React.FC<{ to: string; children: React.ReactNode }> = ({ to, chil
 
 const AdminLayout: React.FC = () => {
   const { user, logout } = useAuth();
+  const { logoUrl } = useBranding();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -38,18 +37,27 @@ const AdminLayout: React.FC = () => {
       {/* Sidebar */}
       <aside className="w-64 bg-brazil-blue text-white p-6 flex flex-col">
         <Link to="/admin/dashboard" className="block mb-8">
-            <img src={GAPPCHAT_LOGO_BASE64} alt="GAPPCHAT Logo" className="h-16 w-auto mx-auto bg-white p-2 rounded-lg shadow-md" />
+            {logoUrl ? (
+                 <img src={logoUrl} alt="GAPPCHAT Logo" className="h-16 w-auto mx-auto bg-white p-2 rounded-lg shadow-md object-contain" />
+            ) : (
+                <h1 className="text-3xl font-bold text-white text-center">GAPPCHAT</h1>
+            )}
         </Link>
         <nav className="flex-grow">
           <ul className="space-y-2">
             <li>
-              <NavLink to="/admin/dashboard">
+              <NavLink to="/admin/dashboard" exact>
                 Meus Agentes
               </NavLink>
             </li>
             <li>
               <NavLink to="/admin/conversas">
                 Conversas
+              </NavLink>
+            </li>
+             <li>
+              <NavLink to="/admin/personalizar">
+                Personalizar Marca
               </NavLink>
             </li>
             {/* Link to Webhook Simulator, only visible to admin 'gestor' */}

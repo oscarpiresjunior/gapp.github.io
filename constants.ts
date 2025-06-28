@@ -16,3 +16,4 @@ export const MOCK_CLIENT_AGENTS_KEY = 'gappchat_mock_client_agents';
 export const MOCK_USERS_KEY = 'gappchat_mock_users';
 export const SESSION_USER_KEY = 'gappchat_session_user_email';
 export const MOCK_CONVERSATIONS_KEY = 'gappchat_conversations'; // New key for CRM
+export const BRANDING_LOGO_KEY = 'gappchat_branding_logo'; // New key for custom logo

@@ -3,14 +3,14 @@ import React, { useState }  from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import LoadingSpinner from '../components/common/LoadingSpinner';
-
-const GAPPCHAT_LOGO_BASE64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABGAAAAIQCAYAAAC0s/33AAAAAXNSR0IArs4c6QAAIABJREFUeF7svQeQXVV1/v1WWl/aGb1bSAghBBJCgOweiyOCjI4o6qgoiKM4jisvI44zjiOOjDPLM6OOzDiOI+sMss5IqCCKyA4gCCQkQCghvXv3tPpaVf3N+XJGR0hISKTbS/d976n/+7Q6derUVT1VdenTJ0+fvmsIQoAQAAIQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAAQgAA-';
+import { useBranding } from '../hooks/useBranding';
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const { login, isLoading, isAuthenticated } = useAuth();
+  const { logoUrl } = useBranding();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -40,7 +40,11 @@ const LoginPage: React.FC = () => {
       <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-xl shadow-2xl">
         <div>
           <Link to="/" className="flex justify-center mb-6">
-             <img src={GAPPCHAT_LOGO_BASE64} alt="GAPPCHAT Logo" className="h-12 w-auto" />
+             {logoUrl ? (
+                <img src={logoUrl} alt="GAPPCHAT Logo" className="h-12 w-auto" />
+             ) : (
+                <h1 className="text-4xl font-bold text-brazil-blue">GAPPCHAT</h1>
+             )}
           </Link>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
             Acessar Painel GAPPCHAT
